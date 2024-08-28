@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { listUsers, createUser } from "../services/user"
+import { listUsers, createUser, deleteUser, updateUser } from "../services/user"
 import res from "express/lib/response"
 
 const router = Router()
@@ -10,13 +10,23 @@ router.get('/', async (req, res)=>{
 })
 
 router.post('/', async (req, res) => {
-    const user = await createUser(req.body)
+    try{
+        const user = await createUser(req.body)
     res.status(201).send(user)
+    } catch(err) {
+        res.status(400).send(err)
+    }
+    
 })
 
-router.delete('/',(req, res) => {
-    res.send('DELETE USER')
+router.delete('/:userId', async(req, res) => {
+    await deleteUser(req.params.userId)
+    res.send()
 })
 
+router.put('/:userId', async(req, res) => {
+    await updateUser(req.params.userId, req.body)
+    res.send()
+})
 
 export default router
